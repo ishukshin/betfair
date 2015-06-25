@@ -11,5 +11,8 @@ class Betfair {
    private $appKey = "XXXXXXX";
    private $appUser = 'username';
    private $appPassword = 'passwd';
+   
+   public function auth(){
+       
+   }
 }
-?>
