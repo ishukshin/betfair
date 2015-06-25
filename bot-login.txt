@@ -1,0 +1,45 @@
+From api.developer.betfair.com
+
+Create a public/private RSA key pair using openssl
+
+> openssl genrsa -out client-2048.key 2048
+
+Updateopenssl configuration file (openssl.cnf) for OpenSSL to override some of the default settings: 
+
+[ ssl_client ]
+basicConstraints = CA:FALSE
+nsCertType = client
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth
+
+Create a certificate signing request (CSR).
+
+> openssl req -new -key client-2048.key -out client-2048.csr
+ 
+ 
+Country Name (2 letter code) [AU]:GB
+State or Province Name (full name) [Some-State]:London
+Locality Name (eg, city) []:London
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:yourcompany.com
+Organizational Unit Name (eg, section) []:Security Team
+Common Name (e.g. server FQDN or YOUR name) []:Test API-NG Certificate
+Email Address []:my.name@mydomain.com
+ 
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+ 
+
+Self-sign the certificate request to create a certificate
+
+> openssl x509 -req -days 365 -in client-2048.csr -signkey client-2048.key -out client-2048.crt -extfile openssl.cnf -extensions ssl_client 
+
+Then take client-2048.crt and upload it into https://myaccount.betfair.com/accountdetails/mysecurity?showAPI=1
+
+To create a PEM format file that contains both the private key and the certificate you can use the following command:
+
+Linux
+> cat client-2048.crt client-2048.key > client-2048.pem
+
+Then use this files to login.
